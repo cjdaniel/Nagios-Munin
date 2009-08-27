@@ -220,7 +220,7 @@ sub get_last_rrd_data {
 														 # fresh_data
 														 # 0.0
 	for my $val (@$line) {
-		if(!$val) { return 'NaN'; } # need this to determine UNKNOWN
+		if(!defined $val) { return 'NaN'; } # need this to determine UNKNOWN
 		return sprintf ("%2.1f",$val); # more human readable format
 	}
 }
