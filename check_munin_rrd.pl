@@ -25,6 +25,8 @@
 #
 # Changelog :
 #
+# 20090827 - will now return UNKNOWN when a value is NaN instead of treating it as zero --cjdaniel
+#
 # 20090624 - check_munin can now exclude values from RRD
 # Ex :
 #   check_munin_rrd.pl -M df -H app1v.domain.org -w 5 -c 10 -e /dev/xvda1
