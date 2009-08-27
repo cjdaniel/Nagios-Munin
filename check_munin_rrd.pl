@@ -157,7 +157,6 @@ my $list_rrd            = <$rrdpath/$hostname-$module-*.rrd>;
 
 
 							unless (grep ($_ eq $name, @exclude_names)) { 
-								print "value: '$value'";
 								if (($value> $opt_w) && ($status ne 2))	{
 												 $status = "1";
 												 $problem_on_name = $name;
