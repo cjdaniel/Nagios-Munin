@@ -155,6 +155,7 @@ my $list_rrd            = <$rrdpath/$hostname-$module-*.rrd>;
 
 
 							unless (grep ($_ eq $name, @exclude_names)) { 
+								print "value: '$value'";
 								if (($value> $opt_w) && ($status ne 2))	{
 												 $status = "1";
 												 $problem_on_name = $name;
@@ -162,6 +163,11 @@ my $list_rrd            = <$rrdpath/$hostname-$module-*.rrd>;
 								}
 								if ($value > $opt_c){
 												 $status = "2";
+												 $problem_on_name = $name;
+												 $problem_value = $value;
+								}
+								if ($value eq 'NaN') {
+												 $status = "3";
 												 $problem_on_name = $name;
 												 $problem_value = $value;
 								}
@@ -181,6 +187,9 @@ if ($status eq 1) {
        print "$problem_on_name value $problem_value, is above critical threshold $opt_c\n";
        $status = $ERRORS{"CRITICAL"};
 
+} elsif ($status eq 3) {
+       print "$problem_on_name value is NaN\n";
+       $status = $ERRORS{"UNKNOWN"};
 } else {
        print "$response_text  \n";
        $status = $ERRORS{"OK"};
@@ -203,13 +212,16 @@ sub get_last_rrd_data {
 	my $start = $last - 300; # Damn rrd ! we may get two values, the one we want and 0.0, we will focus on the first ;-)
 
 	my ($rrdstart, $step, $names, $data) =  RRDs::fetch($rrdfile, "--start=$start", "--end=$last", $cf) or die "fetch failed ($RRDs::error)";
-	my $value = shift(@$data); # We need only the first one
+	my $line = shift(@$data); # We need only the first one
 														 # We would have :
 														 # fresh_data
 														 # or
 														 # fresh_data
 														 # 0.0
-	return sprintf ("%2.1f",@$value); # more human readable format
+	for my $val (@$line) {
+		if(!$val) { return 'NaN'; } # need this to determine UNKNOWN
+		return sprintf ("%2.1f",$val); # more human readable format
+	}
 }
 
 
