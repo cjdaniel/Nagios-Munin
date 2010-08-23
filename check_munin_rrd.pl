@@ -140,7 +140,7 @@ my $list_rrd            = <$rrdpath/$hostname-$module-*.rrd>;
 
 					if ($name) {
 
-                                            my $mtime = (stat( $next ))[9];
+                                            my $mtime = RRDs::last($next);
                                             printf $mtime if $DEBUG; 
                                             my $now_string  = time; 
                                             printf "\n$now_string \n" if $DEBUG;
